@@ -1,6 +1,6 @@
 'use strict';
-if (true) {
-  let info = 'publish';
-  console.log(info)
-}
 
+if (true) {
+  var info = 'publish';
+  console.log(info);
+}

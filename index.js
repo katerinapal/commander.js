@@ -1,22 +1,45 @@
-import events_moduleObject from "events";
-import child_process_moduleObject from "child_process";
-import path from "path";
-import fs from "fs";
-import util_moduleObject from "util";
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+
+var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+
+var _events = require("events");
+
+var _events2 = _interopRequireDefault(_events);
+
+var _child_process = require("child_process");
+
+var _child_process2 = _interopRequireDefault(_child_process);
+
+var _path = require("path");
+
+var _path2 = _interopRequireDefault(_path);
+
+var _fs = require("fs");
+
+var _fs2 = _interopRequireDefault(_fs);
+
+var _util = require("util");
+
+var _util2 = _interopRequireDefault(_util);
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
 /**
  * Module dependencies.
  */
 
-var EventEmitter = events_moduleObject.EventEmitter;
-var spawn = child_process_moduleObject.spawn;
-var dirname = path.dirname;
-var basename = path.basename;
+var EventEmitter = _events2.default.EventEmitter;
+var spawn = _child_process2.default.spawn;
+var dirname = _path2.default.dirname;
+var basename = _path2.default.basename;
 
 /**
  * Inherit `Command` from `EventEmitter.prototype`.
  */
 
-util_moduleObject.inherits(Command, EventEmitter);
+_util2.default.inherits(Command, EventEmitter);
 
 /**
  * Expose the root command.
@@ -62,10 +85,8 @@ function Option(flags, description) {
  * @api private
  */
 
-Option.prototype.name = function() {
-  return this.long
-    .replace('--', '')
-    .replace('no-', '');
+Option.prototype.name = function () {
+  return this.long.replace('--', '').replace('no-', '');
 };
 
 /**
@@ -76,7 +97,7 @@ Option.prototype.name = function() {
  * @api private
  */
 
-Option.prototype.attributeName = function() {
+Option.prototype.attributeName = function () {
   return camelcase(this.name());
 };
 
@@ -88,7 +109,7 @@ Option.prototype.attributeName = function() {
  * @api private
  */
 
-Option.prototype.is = function(arg) {
+Option.prototype.is = function (arg) {
   return this.short === arg || this.long === arg;
 };
 
@@ -169,8 +190,8 @@ function Command(name) {
  * @api public
  */
 
-Command.prototype.command = function(name, desc, opts) {
-  if (typeof desc === 'object' && desc !== null) {
+Command.prototype.command = function (name, desc, opts) {
+  if ((typeof desc === "undefined" ? "undefined" : _typeof(desc)) === 'object' && desc !== null) {
     opts = desc;
     desc = null;
   }
@@ -199,7 +220,7 @@ Command.prototype.command = function(name, desc, opts) {
  * @api public
  */
 
-Command.prototype.arguments = function(desc) {
+Command.prototype.arguments = function (desc) {
   return this.parseExpectedArgs(desc.split(/ +/));
 };
 
@@ -210,7 +231,7 @@ Command.prototype.arguments = function(desc) {
  * @api private
  */
 
-Command.prototype.addImplicitHelpCommand = function() {
+Command.prototype.addImplicitHelpCommand = function () {
   this.command('help [cmd]', 'display help for [cmd]');
 };
 
@@ -224,10 +245,10 @@ Command.prototype.addImplicitHelpCommand = function() {
  * @api public
  */
 
-Command.prototype.parseExpectedArgs = function(args) {
+Command.prototype.parseExpectedArgs = function (args) {
   if (!args.length) return;
   var self = this;
-  args.forEach(function(arg) {
+  args.forEach(function (arg) {
     var argDetails = {
       required: false,
       name: '',
@@ -272,9 +293,9 @@ Command.prototype.parseExpectedArgs = function(args) {
  * @api public
  */
 
-Command.prototype.action = function(fn) {
+Command.prototype.action = function (fn) {
   var self = this;
-  var listener = function(args, unknown) {
+  var listener = function listener(args, unknown) {
     // Parse any so-far unknown options
     args = args || [];
     unknown = unknown || [];
@@ -294,7 +315,7 @@ Command.prototype.action = function(fn) {
     // Leftover arguments need to be pushed back. Fixes issue #56
     if (parsed.args.length) args = parsed.args.concat(args);
 
-    self._args.forEach(function(arg, i) {
+    self._args.forEach(function (arg, i) {
       if (arg.required && args[i] == null) {
         self.missingArgument(arg.name);
       } else if (arg.variadic) {
@@ -373,17 +394,17 @@ Command.prototype.action = function(fn) {
  * @api public
  */
 
-Command.prototype.option = function(flags, description, fn, defaultValue) {
+Command.prototype.option = function (flags, description, fn, defaultValue) {
   var self = this,
-    option = new Option(flags, description),
-    oname = option.name(),
-    name = option.attributeName();
+      option = new Option(flags, description),
+      oname = option.name(),
+      name = option.attributeName();
 
   // default as 3rd arg
   if (typeof fn !== 'function') {
     if (fn instanceof RegExp) {
       var regex = fn;
-      fn = function(val, def) {
+      fn = function fn(val, def) {
         var m = regex.exec(val);
         return m ? m[0] : def;
       };
@@ -409,7 +430,7 @@ Command.prototype.option = function(flags, description, fn, defaultValue) {
 
   // when it's passed assign the value
   // and conditionally invoke the callback
-  this.on('option:' + oname, function(val) {
+  this.on('option:' + oname, function (val) {
     // coercion
     if (val !== null && fn) {
       val = fn(val, self[name] === undefined ? defaultValue : self[name]);
@@ -419,9 +440,7 @@ Command.prototype.option = function(flags, description, fn, defaultValue) {
     if (typeof self[name] === 'boolean' || typeof self[name] === 'undefined') {
       // if no value, bool true, and we have a default, then use it!
       if (val == null) {
-        self[name] = option.bool
-          ? defaultValue || true
-          : false;
+        self[name] = option.bool ? defaultValue || true : false;
       } else {
         self[name] = val;
       }
@@ -441,7 +460,7 @@ Command.prototype.option = function(flags, description, fn, defaultValue) {
  * for unknown options.
  * @api public
  */
-Command.prototype.allowUnknownOption = function(arg) {
+Command.prototype.allowUnknownOption = function (arg) {
   this._allowUnknownOption = arguments.length === 0 || arg;
   return this;
 };
@@ -454,7 +473,7 @@ Command.prototype.allowUnknownOption = function(arg) {
  * @api public
  */
 
-Command.prototype.parse = function(argv) {
+Command.prototype.parse = function (argv) {
   // implicit help
   if (this.executables) this.addImplicitHelpCommand();
 
@@ -482,7 +501,7 @@ Command.prototype.parse = function(argv) {
   var aliasCommand = null;
   // check alias of sub commands
   if (name) {
-    aliasCommand = this.commands.filter(function(command) {
+    aliasCommand = this.commands.filter(function (command) {
       return command.alias() === name;
     })[0];
   }
@@ -511,7 +530,7 @@ Command.prototype.parse = function(argv) {
  * @api private
  */
 
-Command.prototype.executeSubCommand = function(argv, args, unknown) {
+Command.prototype.executeSubCommand = function (argv, args, unknown) {
   args = args.concat(unknown);
 
   if (!args.length) this.help();
@@ -526,18 +545,18 @@ Command.prototype.executeSubCommand = function(argv, args, unknown) {
   // executable
   var f = argv[1];
   // name of the subcommand, link `pm-install`
-  var bin = basename(f, path.extname(f)) + '-' + args[0];
+  var bin = basename(f, _path2.default.extname(f)) + '-' + args[0];
 
   // In case of globally installed, get the base dir where executable
   //  subcommand file should be located at
   var baseDir;
 
-  var resolvedLink = fs.realpathSync(f);
+  var resolvedLink = _fs2.default.realpathSync(f);
 
   baseDir = dirname(resolvedLink);
 
   // prefer local `./<bin>` to bin in the $PATH
-  var localBin = path.join(baseDir, bin);
+  var localBin = _path2.default.join(baseDir, bin);
 
   // whether bin file is a js script with explicit `.js` or `.ts` extension
   var isExplicitJS = false;
@@ -570,15 +589,15 @@ Command.prototype.executeSubCommand = function(argv, args, unknown) {
   }
 
   var signals = ['SIGUSR1', 'SIGUSR2', 'SIGTERM', 'SIGINT', 'SIGHUP'];
-  signals.forEach(function(signal) {
-    process.on(signal, function() {
+  signals.forEach(function (signal) {
+    process.on(signal, function () {
       if (proc.killed === false && proc.exitCode === null) {
         proc.kill(signal);
       }
     });
   });
   proc.on('close', process.exit.bind(process));
-  proc.on('error', function(err) {
+  proc.on('error', function (err) {
     if (err.code === 'ENOENT') {
       console.error('error: %s(1) does not exist, try --help', bin);
     } else if (err.code === 'EACCES') {
@@ -601,11 +620,11 @@ Command.prototype.executeSubCommand = function(argv, args, unknown) {
  * @api private
  */
 
-Command.prototype.normalize = function(args) {
+Command.prototype.normalize = function (args) {
   var ret = [],
-    arg,
-    lastOpt,
-    index;
+      arg,
+      lastOpt,
+      index;
 
   for (var i = 0, len = args.length; i < len; ++i) {
     arg = args[i];
@@ -620,7 +639,7 @@ Command.prototype.normalize = function(args) {
     } else if (lastOpt && lastOpt.required) {
       ret.push(arg);
     } else if (arg.length > 1 && arg[0] === '-' && arg[1] !== '-') {
-      arg.slice(1).split('').forEach(function(c) {
+      arg.slice(1).split('').forEach(function (c) {
         ret.push('-' + c);
       });
     } else if (/^--/.test(arg) && ~(index = arg.indexOf('='))) {
@@ -645,7 +664,7 @@ Command.prototype.normalize = function(args) {
  * @api private
  */
 
-Command.prototype.parseArgs = function(args, unknown) {
+Command.prototype.parseArgs = function (args, unknown) {
   var name;
 
   if (args.length) {
@@ -663,8 +682,9 @@ Command.prototype.parseArgs = function(args, unknown) {
     if (unknown.length > 0) {
       this.unknownOption(unknown[0]);
     }
-    if (this.commands.length === 0 &&
-        this._args.filter(function(a) { return a.required; }).length === 0) {
+    if (this.commands.length === 0 && this._args.filter(function (a) {
+      return a.required;
+    }).length === 0) {
       this.emit('command:*');
     }
   }
@@ -680,7 +700,7 @@ Command.prototype.parseArgs = function(args, unknown) {
  * @api private
  */
 
-Command.prototype.optionFor = function(arg) {
+Command.prototype.optionFor = function (arg) {
   for (var i = 0, len = this.options.length; i < len; ++i) {
     if (this.options[i].is(arg)) {
       return this.options[i];
@@ -697,12 +717,12 @@ Command.prototype.optionFor = function(arg) {
  * @api public
  */
 
-Command.prototype.parseOptions = function(argv) {
+Command.prototype.parseOptions = function (argv) {
   var args = [],
-    len = argv.length,
-    literal,
-    option,
-    arg;
+      len = argv.length,
+      literal,
+      option,
+      arg;
 
   var unknownOptions = [];
 
@@ -731,16 +751,16 @@ Command.prototype.parseOptions = function(argv) {
         arg = argv[++i];
         if (arg == null) return this.optionMissingArgument(option);
         this.emit('option:' + option.name(), arg);
-      // optional arg
+        // optional arg
       } else if (option.optional) {
         arg = argv[i + 1];
-        if (arg == null || (arg[0] === '-' && arg !== '-')) {
+        if (arg == null || arg[0] === '-' && arg !== '-') {
           arg = null;
         } else {
           ++i;
         }
         this.emit('option:' + option.name(), arg);
-      // bool
+        // bool
       } else {
         this.emit('option:' + option.name());
       }
@@ -754,7 +774,7 @@ Command.prototype.parseOptions = function(argv) {
       // If the next argument looks like it might be
       // an argument for this option, we pass it on.
       // If it isn't, then it'll simply be ignored
-      if ((i + 1) < argv.length && argv[i + 1][0] !== '-') {
+      if (i + 1 < argv.length && argv[i + 1][0] !== '-') {
         unknownOptions.push(argv[++i]);
       }
       continue;
@@ -773,9 +793,9 @@ Command.prototype.parseOptions = function(argv) {
  * @return {Object}
  * @api public
  */
-Command.prototype.opts = function() {
+Command.prototype.opts = function () {
   var result = {},
-    len = this.options.length;
+      len = this.options.length;
 
   for (var i = 0; i < len; i++) {
     var key = this.options[i].attributeName();
@@ -791,7 +811,7 @@ Command.prototype.opts = function() {
  * @api private
  */
 
-Command.prototype.missingArgument = function(name) {
+Command.prototype.missingArgument = function (name) {
   console.error("error: missing required argument `%s'", name);
   process.exit(1);
 };
@@ -804,7 +824,7 @@ Command.prototype.missingArgument = function(name) {
  * @api private
  */
 
-Command.prototype.optionMissingArgument = function(option, flag) {
+Command.prototype.optionMissingArgument = function (option, flag) {
   if (flag) {
     console.error("error: option `%s' argument missing, got `%s'", option.flags, flag);
   } else {
@@ -820,7 +840,7 @@ Command.prototype.optionMissingArgument = function(option, flag) {
  * @api private
  */
 
-Command.prototype.unknownOption = function(flag) {
+Command.prototype.unknownOption = function (flag) {
   if (this._allowUnknownOption) return;
   console.error("error: unknown option `%s'", flag);
   process.exit(1);
@@ -833,7 +853,7 @@ Command.prototype.unknownOption = function(flag) {
  * @api private
  */
 
-Command.prototype.variadicArgNotLast = function(name) {
+Command.prototype.variadicArgNotLast = function (name) {
   console.error("error: variadic arguments must be last `%s'", name);
   process.exit(1);
 };
@@ -850,14 +870,14 @@ Command.prototype.variadicArgNotLast = function(name) {
  * @api public
  */
 
-Command.prototype.version = function(str, flags) {
+Command.prototype.version = function (str, flags) {
   if (arguments.length === 0) return this._version;
   this._version = str;
   flags = flags || '-V, --version';
   var versionOption = new Option(flags, 'output the version number');
   this._versionOptionName = versionOption.long.substr(2) || 'version';
   this.options.push(versionOption);
-  this.on('option:' + this._versionOptionName, function() {
+  this.on('option:' + this._versionOptionName, function () {
     process.stdout.write(str + '\n');
     process.exit(0);
   });
@@ -873,7 +893,7 @@ Command.prototype.version = function(str, flags) {
  * @api public
  */
 
-Command.prototype.description = function(str, argsDescription) {
+Command.prototype.description = function (str, argsDescription) {
   if (arguments.length === 0) return this._description;
   this._description = str;
   this._argsDescription = argsDescription;
@@ -888,7 +908,7 @@ Command.prototype.description = function(str, argsDescription) {
  * @api public
  */
 
-Command.prototype.alias = function(alias) {
+Command.prototype.alias = function (alias) {
   var command = this;
   if (this.commands.length !== 0) {
     command = this.commands[this.commands.length - 1];
@@ -910,14 +930,12 @@ Command.prototype.alias = function(alias) {
  * @api public
  */
 
-Command.prototype.usage = function(str) {
-  var args = this._args.map(function(arg) {
+Command.prototype.usage = function (str) {
+  var args = this._args.map(function (arg) {
     return humanReadableArgName(arg);
   });
 
-  var usage = '[options]' +
-    (this.commands.length ? ' [command]' : '') +
-    (this._args.length ? ' ' + args.join(' ') : '');
+  var usage = '[options]' + (this.commands.length ? ' [command]' : '') + (this._args.length ? ' ' + args.join(' ') : '');
 
   if (arguments.length === 0) return this._usage || usage;
   this._usage = str;
@@ -933,7 +951,7 @@ Command.prototype.usage = function(str) {
  * @api public
  */
 
-Command.prototype.name = function(str) {
+Command.prototype.name = function (str) {
   if (arguments.length === 0) return this._name;
   this._name = str;
   return this;
@@ -946,21 +964,15 @@ Command.prototype.name = function(str) {
  * @api private
  */
 
-Command.prototype.prepareCommands = function() {
-  return this.commands.filter(function(cmd) {
+Command.prototype.prepareCommands = function () {
+  return this.commands.filter(function (cmd) {
     return !cmd._noHelp;
-  }).map(function(cmd) {
-    var args = cmd._args.map(function(arg) {
+  }).map(function (cmd) {
+    var args = cmd._args.map(function (arg) {
       return humanReadableArgName(arg);
     }).join(' ');
 
-    return [
-      cmd._name +
-        (cmd._alias ? '|' + cmd._alias : '') +
-        (cmd.options.length ? ' [options]' : '') +
-        (args ? ' ' + args : ''),
-      cmd._description
-    ];
+    return [cmd._name + (cmd._alias ? '|' + cmd._alias : '') + (cmd.options.length ? ' [options]' : '') + (args ? ' ' + args : ''), cmd._description];
   });
 };
 
@@ -971,9 +983,9 @@ Command.prototype.prepareCommands = function() {
  * @api private
  */
 
-Command.prototype.largestCommandLength = function() {
+Command.prototype.largestCommandLength = function () {
   var commands = this.prepareCommands();
-  return commands.reduce(function(max, command) {
+  return commands.reduce(function (max, command) {
     return Math.max(max, command[0].length);
   }, 0);
 };
@@ -985,12 +997,12 @@ Command.prototype.largestCommandLength = function() {
  * @api private
  */
 
-Command.prototype.largestOptionLength = function() {
+Command.prototype.largestOptionLength = function () {
   var options = [].slice.call(this.options);
   options.push({
     flags: '-h, --help'
   });
-  return options.reduce(function(max, option) {
+  return options.reduce(function (max, option) {
     return Math.max(max, option.flags.length);
   }, 0);
 };
@@ -1002,8 +1014,8 @@ Command.prototype.largestOptionLength = function() {
  * @api private
  */
 
-Command.prototype.largestArgLength = function() {
-  return this._args.reduce(function(max, arg) {
+Command.prototype.largestArgLength = function () {
+  return this._args.reduce(function (max, arg) {
     return Math.max(max, arg.name.length);
   }, 0);
 };
@@ -1015,7 +1027,7 @@ Command.prototype.largestArgLength = function() {
  * @api private
  */
 
-Command.prototype.padWidth = function() {
+Command.prototype.padWidth = function () {
   var width = this.largestOptionLength();
   if (this._argsDescription && this._args.length) {
     if (this.largestArgLength() > width) {
@@ -1039,15 +1051,13 @@ Command.prototype.padWidth = function() {
  * @api private
  */
 
-Command.prototype.optionHelp = function() {
+Command.prototype.optionHelp = function () {
   var width = this.padWidth();
 
   // Append the help information
-  return this.options.map(function(option) {
-    return pad(option.flags, width) + '  ' + option.description +
-      ((option.bool && option.defaultValue !== undefined) ? ' (default: ' + JSON.stringify(option.defaultValue) + ')' : '');
-  }).concat([pad('-h, --help', width) + '  ' + 'output usage information'])
-    .join('\n');
+  return this.options.map(function (option) {
+    return pad(option.flags, width) + '  ' + option.description + (option.bool && option.defaultValue !== undefined ? ' (default: ' + JSON.stringify(option.defaultValue) + ')' : '');
+  }).concat([pad('-h, --help', width) + '  ' + 'output usage information']).join('\n');
 };
 
 /**
@@ -1057,20 +1067,16 @@ Command.prototype.optionHelp = function() {
  * @api private
  */
 
-Command.prototype.commandHelp = function() {
+Command.prototype.commandHelp = function () {
   if (!this.commands.length) return '';
 
   var commands = this.prepareCommands();
   var width = this.padWidth();
 
-  return [
-    'Commands:',
-    commands.map(function(cmd) {
-      var desc = cmd[1] ? '  ' + cmd[1] : '';
-      return (desc ? pad(cmd[0], width) : cmd[0]) + desc;
-    }).join('\n').replace(/^/gm, '  '),
-    ''
-  ].join('\n');
+  return ['Commands:', commands.map(function (cmd) {
+    var desc = cmd[1] ? '  ' + cmd[1] : '';
+    return (desc ? pad(cmd[0], width) : cmd[0]) + desc;
+  }).join('\n').replace(/^/gm, '  '), ''].join('\n');
 };
 
 /**
@@ -1080,20 +1086,17 @@ Command.prototype.commandHelp = function() {
  * @api private
  */
 
-Command.prototype.helpInformation = function() {
+Command.prototype.helpInformation = function () {
   var desc = [];
   if (this._description) {
-    desc = [
-      this._description,
-      ''
-    ];
+    desc = [this._description, ''];
 
     var argsDescription = this._argsDescription;
     if (argsDescription && this._args.length) {
       var width = this.padWidth();
       desc.push('Arguments:');
       desc.push('');
-      this._args.forEach(function(arg) {
+      this._args.forEach(function (arg) {
         desc.push('  ' + pad(arg.name, width) + '  ' + argsDescription[arg.name]);
       });
       desc.push('');
@@ -1104,26 +1107,15 @@ Command.prototype.helpInformation = function() {
   if (this._alias) {
     cmdName = cmdName + '|' + this._alias;
   }
-  var usage = [
-    'Usage: ' + cmdName + ' ' + this.usage(),
-    ''
-  ];
+  var usage = ['Usage: ' + cmdName + ' ' + this.usage(), ''];
 
   var cmds = [];
   var commandHelp = this.commandHelp();
   if (commandHelp) cmds = [commandHelp];
 
-  var options = [
-    'Options:',
-    '' + this.optionHelp().replace(/^/gm, '  '),
-    ''
-  ];
+  var options = ['Options:', '' + this.optionHelp().replace(/^/gm, '  '), ''];
 
-  return usage
-    .concat(desc)
-    .concat(options)
-    .concat(cmds)
-    .join('\n');
+  return usage.concat(desc).concat(options).concat(cmds).join('\n');
 };
 
 /**
@@ -1132,9 +1124,9 @@ Command.prototype.helpInformation = function() {
  * @api public
  */
 
-Command.prototype.outputHelp = function(cb) {
+Command.prototype.outputHelp = function (cb) {
   if (!cb) {
-    cb = function(passthru) {
+    cb = function cb(passthru) {
       return passthru;
     };
   }
@@ -1148,7 +1140,7 @@ Command.prototype.outputHelp = function(cb) {
  * @api public
  */
 
-Command.prototype.help = function(cb) {
+Command.prototype.help = function (cb) {
   this.outputHelp(cb);
   process.exit();
 };
@@ -1162,7 +1154,7 @@ Command.prototype.help = function(cb) {
  */
 
 function camelcase(flag) {
-  return flag.split('-').reduce(function(str, word) {
+  return flag.split('-').reduce(function (str, word) {
     return str + word[0].toUpperCase() + word.slice(1);
   });
 }
@@ -1210,19 +1202,18 @@ function outputHelpIfNecessary(cmd, options) {
 function humanReadableArgName(arg) {
   var nameOutput = arg.name + (arg.variadic === true ? '...' : '');
 
-  return arg.required
-    ? '<' + nameOutput + '>'
-    : '[' + nameOutput + ']';
+  return arg.required ? '<' + nameOutput + '>' : '[' + nameOutput + ']';
 }
 
 // for versions before node v0.8 when there weren't `fs.existsSync`
 function exists(file) {
   try {
-    if (fs.statSync(file).isFile()) {
+    if (_fs2.default.statSync(file).isFile()) {
       return true;
     }
   } catch (e) {
     return false;
   }
 }
-export default exportedObject;
+exports.default = exportedObject;
+module.exports = exports.default;
