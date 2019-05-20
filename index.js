@@ -1,37 +1,40 @@
+import events_moduleObject from "events";
+import child_process_moduleObject from "child_process";
+import path from "path";
+import fs from "fs";
+import util_moduleObject from "util";
 /**
  * Module dependencies.
  */
 
-var EventEmitter = require('events').EventEmitter;
-var spawn = require('child_process').spawn;
-var path = require('path');
+var EventEmitter = events_moduleObject.EventEmitter;
+var spawn = child_process_moduleObject.spawn;
 var dirname = path.dirname;
 var basename = path.basename;
-var fs = require('fs');
 
 /**
  * Inherit `Command` from `EventEmitter.prototype`.
  */
 
-require('util').inherits(Command, EventEmitter);
+util_moduleObject.inherits(Command, EventEmitter);
 
 /**
  * Expose the root command.
  */
 
-exports = module.exports = new Command();
+var exportedObject = new Command();;
 
 /**
  * Expose `Command`.
  */
 
-exports.Command = Command;
+exportedObject.Command = Command;
 
 /**
  * Expose `Option`.
  */
 
-exports.Option = Option;
+exportedObject.Option = Option;
 
 /**
  * Initialize a new `Option` with the given `flags` and `description`.
@@ -1222,3 +1225,4 @@ function exists(file) {
     return false;
   }
 }
+export default exportedObject;
