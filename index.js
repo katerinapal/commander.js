@@ -1,19 +1,22 @@
+import events_moduleObject from "events";
+import child_process_moduleObject from "child_process";
+import path from "path";
+import fs from "fs";
+import util_moduleObject from "util";
 /**
  * Module dependencies.
  */
 
-var EventEmitter = require('events').EventEmitter;
-var spawn = require('child_process').spawn;
-var path = require('path');
+var EventEmitter = events_moduleObject.EventEmitter;
+var spawn = child_process_moduleObject.spawn;
 var dirname = path.dirname;
 var basename = path.basename;
-var fs = require('fs');
 
 /**
  * Inherit `Command` from `EventEmitter.prototype`.
  */
 
-require('util').inherits(Command, EventEmitter);
+util_moduleObject.inherits(Command, EventEmitter);
 
 /**
  * Expose the root command.

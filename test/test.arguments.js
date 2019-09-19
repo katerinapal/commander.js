@@ -1,9 +1,5 @@
-/**
- * Top-level command syntax.
- */
-
-var program = require('../')
-  , should = require('should');
+import { program } from "../";
+import should from "should";
 
 var envValue = "";
 var cmdValue = "";

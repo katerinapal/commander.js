@@ -1,6 +1,7 @@
-var spawn = require('child_process').spawn,
-  path = require('path'),
-  should = require('should');
+import child_process_moduleObject from "child_process";
+import path from "path";
+import should from "should";
+var spawn = child_process_moduleObject.spawn;
 
 var bin = path.join(__dirname, './fixtures/pm');
 var proc = spawn(bin, ['listen'], {});

@@ -1,8 +1,12 @@
 #!/usr/bin/env node
 
-const { spawnSync } = require('child_process')
-const { readdirSync } = require('fs')
-const { extname, join } = require('path')
+import child_process_moduleDefault from "child_process";
+import fs_moduleDefault from "fs";
+import path_moduleDefault from "path";
+
+const { spawnSync } = child_process_moduleDefault
+const { readdirSync } = fs_moduleDefault
+const { extname, join } = path_moduleDefault
 
 process.env.NODE_ENV = 'test';
 

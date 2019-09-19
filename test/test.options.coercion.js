@@ -1,9 +1,5 @@
-/**
- * Module dependencies.
- */
-
-var program = require('../')
-  , should = require('should');
+import { program } from "../";
+import should from "should";
 
 function parseRange(str) {
   return str.split('..').map(Number);

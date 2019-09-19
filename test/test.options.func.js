@@ -1,5 +1,5 @@
-var program = require('../')
-  , should = require('should');
+import { program } from "../";
+import should from "should";
 
 program
   .version('0.0.1')

@@ -1,6 +1,7 @@
-var program = require('../')
-	, sinon = require('sinon').sandbox.create()
-  , should = require('should');
+import { program } from "../";
+import sinon_moduleObject from "sinon";
+import should from "should";
+var sinon = sinon_moduleObject.sandbox.create();
 
 sinon.stub(process, 'exit');
 sinon.stub(process.stdout, 'write');

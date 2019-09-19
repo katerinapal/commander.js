@@ -1,9 +1,10 @@
+import { program } from "../";
+import sinon_moduleObject from "sinon";
+import should from "should";
 /**
  * Module dependencies.
  */
-var program = require('../')
-    , sinon = require('sinon').sandbox.create()
-    , should = require('should');
+var sinon = sinon_moduleObject.sandbox.create();
 
 var stubError = sinon.stub(console, 'error');
 var stubExit = sinon.stub(process, 'exit');

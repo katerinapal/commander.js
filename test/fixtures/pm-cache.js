@@ -1,4 +1,4 @@
-var program = require('../../');
+import { program } from "../../";
 
 program
   .command('clear', 'clear the cache')

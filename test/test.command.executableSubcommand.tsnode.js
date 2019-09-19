@@ -1,6 +1,7 @@
-var exec = require('child_process').exec
-  , path = require('path')
-  , should = require('should');
+import child_process_moduleObject from "child_process";
+import path from "path";
+import should from "should";
+var exec = child_process_moduleObject.exec;
 
 var bin = path.join(__dirname, './fixtures-ts/pm.ts')
 
